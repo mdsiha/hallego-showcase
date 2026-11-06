@@ -83,8 +83,8 @@ Pure PostgreSQL approximate matching using trigram similarity.
   is a single SQL query with one execution plan.
 - **PostgreSQL handles Turkish well enough**: the `turkish` text search
   configuration provides stemming, the `unaccent` extension is installed, and
-  the database image sets the `tr_TR.UTF-8` locale (with a `turkish_ci`
-  collation for sorting).
+  the database image sets the `tr_TR.UTF-8` locale (with an ICU `turkish_ci`
+  collation for sorting and comparison).
 - **One less service to operate**: no Elasticsearch cluster to
   upgrade, back up, or monitor.
 - **Search history and saved searches use normal foreign keys**:

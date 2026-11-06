@@ -9,7 +9,7 @@
 Several Hallego flows must run asynchronously:
 
 - **Image processing pipeline**, Sharp resize to 3 variants, WebP
-  conversion, upload to DigitalOcean Spaces. Triggered on every ad
+  conversion, upload to S3-compatible object storage (Hetzner). Triggered on every ad
   submission and avatar change.
 - **Email sending**, transactional emails (verification, password
   reset, ad approval/rejection, unread message reminder).
@@ -91,8 +91,8 @@ timers.
   scheduled jobs, priority queues, all built into BullMQ.
 - **Same image, different role**: the worker container reuses the
   app image with a different command. No separate build pipeline.
-- **Inspection and debugging via Bull Board**: optional UI for queue
-  state during development.
+- **Inspectable**: BullMQ job state lives in Redis, so it can be inspected
+  with standard tooling.
 - **Atomic with Redis transactions**: BullMQ uses Lua scripts for
   reliable enqueue/dequeue.
 
@@ -100,7 +100,7 @@ timers.
 - **Single point of failure**: if Redis goes down, queues stop. We
   mitigate by treating Redis with the same monitoring and alerting
   as PostgreSQL, it is a critical dependency, not a cache.
-- **Persistence trade-off**: Redis AOF is enabled, but a hard crash
+- **Persistence trade-off**: Depending on the Redis persistence settings, a hard crash
   between fsync intervals can lose recent jobs. Acceptable for our
   workload (email, push, image processing) since callers can retry
   for the few cases where loss matters.

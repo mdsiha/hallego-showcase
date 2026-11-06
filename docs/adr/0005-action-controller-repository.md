@@ -144,9 +144,9 @@ can stay thin and Actions can be reused from jobs and CLI commands.
   `app/admin/ads/actions/`. No archaeology.
 - **Testable business logic**: Actions are plain classes with
   injected dependencies. Unit tests do not need HTTP context.
-- **Reusable Actions**: the same `ApproveAdAction` is called from
-  the admin controller, an admin CLI command, and an automated
-  moderation job, all without duplication.
+- **Reusable Actions**: an Action such as `ValidateAdAction` (ad moderation) is plain business
+  logic with no HTTP dependency, so it can be called from a controller,
+  a job or a CLI command without duplication.
 - **Predictable file size**: controllers stay around 30-50 lines,
   Actions around 50-150 lines. Files do not balloon.
 - **Repository keeps query knowledge in one place**: optimizing a
@@ -163,7 +163,7 @@ can stay thin and Actions can be reused from jobs and CLI commands.
 - **Boilerplate**: each new endpoint requires creating multiple
   files. Mitigated by Ace generators but still noticeable.
 - **Some modules are over-structured**: read-only endpoints with
-  no business logic (e.g. `GetAdAction` is 9 lines) might not
+  no business logic (e.g. `GetAdAction` is about 18 lines) might not
   justify a separate Action. We accept the consistency cost.
 
 ### Neutral
