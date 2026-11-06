@@ -47,6 +47,14 @@ Measured on the code base on 2026-11-02.
 - **AI**: Anthropic Claude behind a provider abstraction (OpenAI and Gemini are supported)
 - **Infrastructure**: Docker, Coolify on Hetzner, GitHub Actions, Cloudflare
 
+## The app
+
+<p>
+<img src="docs/img/01_home.jpg" width="30%" alt="Home"> <img src="docs/img/03_filters.jpg" width="30%" alt="Filters"> <img src="docs/img/04_results.jpg" width="30%" alt="Search results">
+</p>
+
+The interface is in Turkish.
+
 ## Things worth a look
 
 **AI-assisted moderation.** Every new ad goes through an asynchronous pipeline. A vision model analyses the photos and produces a trust score, and the result routes the ad to publication or to a human moderator. The pipeline has an automatic kill switch when the model fails, versioned prompts, a benchmark corpus to compare prompt versions, and an admin console that tracks cost, latency and quality.
@@ -75,3 +83,5 @@ The other ADRs cover security and operations details and stay private.
 
 Michael DAS, full-stack software engineer, relocating to Ottawa, Canada.
 Email: mchdas@proton.me
+
+&copy; 2026 Michael DAS. All rights reserved. The text and images in this repository are shared for presentation purposes only.

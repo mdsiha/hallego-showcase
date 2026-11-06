@@ -1,21 +1,21 @@
 # ADR-0004: BullMQ + Redis over cloud queues
 
 - **Status**: Accepted
-- **Date**: 2024-XX-XX
+- **Date**: 2024 (decision), recorded 2026-05-08
 - **Deciders**: Michael DAŞ
 
 ## Context
 
 Several Hallego flows must run asynchronously:
 
-- **Image processing pipeline** — Sharp resize to 3 variants, WebP
+- **Image processing pipeline**, Sharp resize to 3 variants, WebP
   conversion, upload to DigitalOcean Spaces. Triggered on every ad
   submission and avatar change.
-- **Email sending** — transactional emails (verification, password
+- **Email sending**, transactional emails (verification, password
   reset, ad approval/rejection, unread message reminder).
-- **Push notifications** — FCM dispatch for chat messages and ad
+- **Push notifications**, FCM dispatch for chat messages and ad
   status changes.
-- **Scheduled tasks** — daily GeoIP refresh, account anonymization
+- **Scheduled tasks**, daily GeoIP refresh, account anonymization
   for KVKK, expired session cleanup.
 
 We needed: delayed jobs (e.g. unread-message reminder after 15
@@ -36,7 +36,7 @@ queue.
 
 ## Alternatives Considered
 
-### Option A — AWS SQS / Google Cloud Tasks / Azure Service Bus
+### Option A: AWS SQS / Google Cloud Tasks / Azure Service Bus
 Managed cloud queue services with very high reliability and zero
 operational overhead.
 
@@ -44,34 +44,34 @@ operational overhead.
 - Adds a cloud dependency outside our Hetzner perimeter. Egress to
   a different cloud provider is non-zero cost and adds latency.
 - Cron-style scheduling and delayed jobs require bolting on
-  EventBridge / Cloud Scheduler — multiple services to coordinate.
+  EventBridge / Cloud Scheduler, multiple services to coordinate.
 - Vendor lock-in on a non-critical infrastructure component, when a
   local solution is sufficient at our scale.
 - Pricing per million messages adds up faster than expected for a
   chat-heavy app.
 
-### Option B — RabbitMQ
+### Option B: RabbitMQ
 Mature open-source message broker, AMQP-based.
 
 **Rejected because:**
 - A second stateful service to operate (alongside PostgreSQL and
   Redis), purely for queue use cases.
 - Delayed messages and scheduled jobs require plugins or workarounds.
-- Redis is already in the stack for sessions and rate limiting —
-  reusing it has zero marginal infrastructure cost.
+- Redis is already in the stack for sessions and rate limiting,
+  so reusing it has zero marginal infrastructure cost.
 
-### Option C — PostgreSQL-based queue (e.g. `pgq`, `graphile-worker`)
+### Option C: PostgreSQL-based queue (e.g. `pgq`, `graphile-worker`)
 Use the existing database as the queue.
 
 **Rejected because:**
 - Mixes transactional load with queue polling on the same database.
   At scale, queue polling becomes noisy on the primary.
 - Less mature ecosystem than BullMQ in the Node.js world.
-- We already use PostgreSQL for rate limiting (see ADR-0008); adding
+- We already use PostgreSQL for rate limiting (a separate ADR, not published here); adding
   queues on top would concentrate too much non-data load on the
   database.
 
-### Option D — In-memory / `setTimeout`
+### Option D: In-memory / `setTimeout`
 No queue, run async work directly in the request handler or via
 timers.
 
@@ -80,7 +80,7 @@ timers.
 - Delays are not durable across deploys.
 - No retry semantics.
 - Acceptable only for trivial fire-and-forget cases (which we keep
-  inline — e.g. badge recompute after a message).
+  inline, e.g. badge recompute after a message).
 
 ## Consequences
 
@@ -99,7 +99,7 @@ timers.
 ### Negative
 - **Single point of failure**: if Redis goes down, queues stop. We
   mitigate by treating Redis with the same monitoring and alerting
-  as PostgreSQL — it is a critical dependency, not a cache.
+  as PostgreSQL, it is a critical dependency, not a cache.
 - **Persistence trade-off**: Redis AOF is enabled, but a hard crash
   between fsync intervals can lose recent jobs. Acceptable for our
   workload (email, push, image processing) since callers can retry
@@ -118,7 +118,9 @@ timers.
 
 ## References
 
+Paths below refer to the private repository.
+
 - [BullMQ documentation](https://docs.bullmq.io)
 - [`@rlanz/bull-queue`](https://github.com/Rlanz/bull-queue)
-- `backend/start.sh` — role-based startup
-- `backend/app/*/jobs/` — job implementations
+- `backend/start.sh`, role-based startup
+- `backend/app/*/jobs/`, job implementations

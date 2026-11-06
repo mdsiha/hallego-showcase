@@ -14,7 +14,7 @@ English version: [README.md](./README.md)
 
 ## Vue d'ensemble
 
-Voir le schéma dans [README.md](./README.md#system-overview).
+Voir le schéma dans [README.md](./README.md#system-overview) (en anglais, les noms sont les mêmes).
 
 ## En chiffres
 
@@ -36,6 +36,14 @@ Mesurés sur le code le 2 novembre 2026.
 - **IA** : Anthropic Claude derrière une couche d'abstraction (OpenAI et Gemini supportés)
 - **Infrastructure** : Docker, Coolify sur Hetzner, GitHub Actions, Cloudflare
 
+## L'application
+
+<p>
+<img src="docs/img/01_home.jpg" width="30%" alt="Accueil"> <img src="docs/img/03_filters.jpg" width="30%" alt="Filtres"> <img src="docs/img/04_results.jpg" width="30%" alt="Résultats de recherche">
+</p>
+
+L'interface est en turc.
+
 ## Points à regarder
 
 **Modération assistée par IA.** Chaque nouvelle annonce passe par un pipeline asynchrone. Un modèle de vision analyse les photos et produit un score de confiance, qui oriente l'annonce vers la publication ou vers un modérateur humain. Le pipeline a un arrêt automatique en cas de panne du modèle, des prompts versionnés, un corpus de référence pour comparer les versions et une console d'administration qui suit les coûts, la latence et la qualité.
@@ -52,3 +60,5 @@ Mesurés sur le code le 2 novembre 2026.
 
 Michael DAS, développeur full-stack, en cours d'installation à Ottawa (Canada).
 Courriel : mchdas@proton.me
+
+&copy; 2026 Michael DAS. Tous droits réservés. Les textes et images de ce dépôt sont partagés à titre de présentation seulement.

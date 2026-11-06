@@ -1,7 +1,7 @@
 # ADR-0003: PostgreSQL FTS over Elasticsearch
 
 - **Status**: Accepted
-- **Date**: 2024-XX-XX
+- **Date**: 2024 (decision), recorded 2026-05-08
 - **Deciders**: Michael DAŞ
 
 ## Context
@@ -22,8 +22,8 @@ in production has a non-trivial maintenance cost.
 
 ## Decision
 
-We use **PostgreSQL Full-Text Search** with the Turkish ICU
-configuration as the search backend. Search uses `tsvector` columns
+We use **PostgreSQL Full-Text Search** with the built-in `turkish`
+text search configuration as the search backend. Search uses `tsvector` columns
 generated from title and description with weight differentiation
 (title weighted higher than description).
 
@@ -36,7 +36,7 @@ Search history and saved searches are stored in the same database.
 
 ## Alternatives Considered
 
-### Option A — Elasticsearch / OpenSearch
+### Option A: Elasticsearch / OpenSearch
 The industry-standard search engine. Best-in-class relevance,
 aggregations, faceting, and Turkish analyzers.
 
@@ -46,14 +46,14 @@ aggregations, faceting, and Turkish analyzers.
   surface.
 - Indexes must be kept in sync with the source of truth (PostgreSQL).
   This requires either a CDC pipeline or manual reindex on every
-  write — both add complexity and failure modes.
+  write, both add complexity and failure modes.
 - Memory footprint is significant on a single Hetzner VPS shared with
   the app, queue worker, and Mercure.
 - Geographic filtering combined with full-text is awkward across two
   systems (search returns IDs, then PostGIS filters them, or vice
-  versa — neither is efficient).
+  versa, neither is efficient).
 
-### Option B — Meilisearch / Typesense
+### Option B: Meilisearch / Typesense
 Lightweight, modern search engines with simpler operations than
 Elasticsearch.
 
@@ -62,13 +62,13 @@ Elasticsearch.
   PostgreSQL.
 - Geographic + full-text combination still requires coordinating two
   systems.
-- Turkish language support is less mature than PostgreSQL ICU.
+- Turkish language support is less mature than PostgreSQL's built-in `turkish` configuration.
 
-### Option C — Trigram search (`pg_trgm`)
+### Option C: Trigram search (`pg_trgm`)
 Pure PostgreSQL approximate matching using trigram similarity.
 
 **Rejected because:**
-- No native Turkish stemming — it matches surface-level character
+- No native Turkish stemming, it matches surface-level character
   similarity, not linguistic roots.
 - Acceptable as a complement (e.g. for username search or typo
   tolerance) but not as the primary search engine.
@@ -81,9 +81,10 @@ Pure PostgreSQL approximate matching using trigram similarity.
 - **Trivial JOINs across search and structured filters**: a search
   with category, price range, geographic radius, and free-text terms
   is a single SQL query with one execution plan.
-- **PostgreSQL ICU handles Turkish properly**: dotted/dotless I,
-  diacritics, and stemming are configured via the `simple_unaccent`
-  + Turkish dictionary stack.
+- **PostgreSQL handles Turkish well enough**: the `turkish` text search
+  configuration provides stemming, the `unaccent` extension is installed, and
+  the database image sets the `tr_TR.UTF-8` locale (with a `turkish_ci`
+  collation for sorting).
 - **One less service to operate**: no Elasticsearch cluster to
   upgrade, back up, or monitor.
 - **Search history and saved searches use normal foreign keys**:
@@ -92,25 +93,27 @@ Pure PostgreSQL approximate matching using trigram similarity.
 ### Negative
 - **Relevance tuning is more limited than Elasticsearch**: BM25,
   custom analyzers, learning-to-rank, and synonym graphs are not
-  available out of the box. We use `ts_rank_cd` with weighted
+  available out of the box. We use `ts_rank` with weighted
   tsvectors, which is good enough for current scale but ceiling-bound.
 - **Faceted search aggregations are less efficient**: counting ads
   per category for a given query requires either separate queries
   or window functions, less elegant than Elasticsearch aggs.
 - **Search performance is bounded by PostgreSQL**: at very high
   scale (100k+ ads, hundreds of QPS), we will need to revisit. The
-  migration path is documented: extract a search service that
+  likely migration path is to extract a search service that
   consumes a logical replication stream.
 
 ### Neutral
-- The Turkish FTS configuration is custom (custom dictionary files
-  shipped in the PostGIS Docker image). Onboarding a new ops engineer
-  requires reading the Dockerfile.
+- The Turkish locale is set up in the PostGIS-based Docker image
+  (`tr_TR.UTF-8`). Onboarding a new ops engineer requires reading the
+  Dockerfile.
 
 ## References
 
+Paths below refer to the private repository.
+
 - [PostgreSQL Text Search documentation](https://www.postgresql.org/docs/17/textsearch.html)
-- `backend/database/migrations/` — search
+- `backend/database/migrations/`, search
   index migrations
-- `backend/app/search/` — search module
+- `backend/app/search/`, search module
 - ARCHITECTURE.md § Technical Decisions
