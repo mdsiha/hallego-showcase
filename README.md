@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/img/logo.png" width="240" alt="Hallego"></p>
+
 # Hallego, architecture showcase
 
 Hallego is a hyperlocal second-hand marketplace for families with children, live on Google Play in Turkey. I designed and built the whole product on my own: API, mobile app, website, admin panel, infrastructure and AI moderation.
@@ -66,6 +68,8 @@ The interface is in Turkish.
 **Pragmatic infrastructure choices.** PostgreSQL full-text search instead of Elasticsearch ([ADR-0003](./docs/adr/0003-postgresql-fts-over-elasticsearch.md)), and Redis with BullMQ instead of a cloud queue ([ADR-0004](./docs/adr/0004-bullmq-redis-over-cloud-queues.md)).
 
 **Privacy by design.** The product follows the Turkish data protection law (KVKK): encryption at rest, audit logs, soft deletes, and server-side obfuscation of exact locations.
+
+<p><img src="docs/img/06_location.jpg" width="40%" alt="Approximate ad location on a map"><br><sub>The exact address is never shown: the app displays a 750 m circle computed on the server.</sub></p>
 
 ## Published decision records
 

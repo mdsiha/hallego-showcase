@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/img/logo.png" width="240" alt="Hallego"></p>
+
 # Hallego, vitrine d'architecture
 
 Hallego est une marketplace de seconde main hyperlocale pour les familles avec enfants, disponible sur Google Play en Turquie. J'ai conçu et réalisé seul tout le produit : API, application mobile, site web, panneau d'administration, infrastructure et modération par IA.
@@ -55,6 +57,8 @@ L'interface est en turc.
 **Choix d'infrastructure pragmatiques.** Recherche plein texte PostgreSQL plutôt qu'Elasticsearch ([ADR-0003](./docs/adr/0003-postgresql-fts-over-elasticsearch.md)), Redis et BullMQ plutôt qu'une file de messages cloud ([ADR-0004](./docs/adr/0004-bullmq-redis-over-cloud-queues.md)).
 
 **Protection des données dès la conception.** Le produit respecte la loi turque sur les données personnelles (KVKK) : chiffrement au repos, journaux d'audit, suppression logique et brouillage de la position exacte côté serveur.
+
+<p><img src="docs/img/06_location.jpg" width="40%" alt="Position approximative d'une annonce"><br><sub>L'adresse exacte n'est jamais affichée : l'application montre un cercle de 750 m calculé côté serveur.</sub></p>
 
 ## Contact
 
