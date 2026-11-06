@@ -1,7 +1,7 @@
 # ADR-0002: Mercure SSE over WebSockets
 
 - **Status**: Accepted
-- **Date**: 2024-XX-XX
+- **Date**: 2024 (decision), recorded 2026-05-08
 - **Deciders**: Michael DAŞ
 
 ## Context
@@ -32,13 +32,13 @@ We use **Mercure** (https://mercure.rocks) over **Server-Sent Events
 
 Mercure runs as a sidecar container behind Traefik. The AdonisJS backend
 publishes updates to the Mercure hub via HTTP POST. Clients (Flutter
-mobile, Vue admin) subscribe to private topics authorized by JWT tokens
+mobile, web admin) subscribe to private topics authorized by JWT tokens
 issued by the backend. JWT topics are derived from the user ID at
 authentication time and refreshed via `/api/mercure/token`.
 
 ## Alternatives Considered
 
-### Option A — WebSockets via Socket.io
+### Option A: WebSockets via Socket.io
 A classic choice with mature client libraries on both Flutter
 (`socket_io_client`) and JavaScript. Handles reconnection and rooms
 out of the box.
@@ -46,7 +46,7 @@ out of the box.
 **Rejected because:**
 - Requires running a stateful Node.js process colocated with the API,
   or a separate Socket.io server. Either way, scaling horizontally
-  requires sticky sessions or a Redis adapter — additional operational
+  requires sticky sessions or a Redis adapter, additional operational
   cost.
 - Bidirectional channel is overkill: we only ever push from server to
   client. Client-to-server messages already go through normal HTTP
@@ -54,7 +54,7 @@ out of the box.
 - Authorization model (rooms, namespaces) is application-level and must
   be implemented manually on every event type.
 
-### Option B — Native WebSockets via AdonisJS Transmit
+### Option B: AdonisJS Transmit (SSE)
 AdonisJS ships an official SSE-based real-time package
 (`@adonisjs/transmit`). Tight integration with the framework.
 
@@ -68,17 +68,17 @@ AdonisJS ships an official SSE-based real-time package
 - Less battle-tested in production than Mercure (which has been
   used at scale by Symfony/API Platform projects since 2018).
 
-### Option C — Pusher / Ably / managed cloud service
+### Option C: Pusher / Ably / managed cloud service
 Fully managed real-time infrastructure with SDKs for every platform.
 
 **Rejected because:**
-- Pricing scales with concurrent connections — costly for a chat-heavy
+- Pricing scales with concurrent connections, costly for a chat-heavy
   consumer app with mostly idle but persistent connections.
 - Adds a third-party dependency outside our infrastructure perimeter,
   which conflicts with our KVKK posture (Turkish data protection law).
 - Vendor lock-in on a critical real-time path.
 
-### Option D — Long polling
+### Option D: Long polling
 Simplest possible model, no extra infrastructure.
 
 **Rejected because:**
@@ -126,7 +126,9 @@ Simplest possible model, no extra infrastructure.
 
 ## References
 
+Paths below refer to the private repository.
+
 - [Mercure protocol specification](https://mercure.rocks/spec)
-- `backend/app/mercure/` — token issuance
-- `mobile/lib/mercure/` — client implementation
+- `backend/app/mercure/`, token issuance
+- `mobile/lib/mercure/`, client implementation
 - SECURITY.md § Authentication

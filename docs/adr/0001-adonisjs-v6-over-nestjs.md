@@ -1,8 +1,13 @@
 # ADR-0001: AdonisJS v6 over NestJS
 
 - **Status**: Accepted
-- **Date**: 2024-XX-XX
+- **Date**: 2024 (decision), recorded 2026-05-08
 - **Deciders**: Michael DAŞ
+
+> **Update, 2026.** The decision for the API stands. The Vue 3, Inertia.js and PrimeVue
+> surfaces described below are being replaced by Next.js applications (public site and
+> admin panel) in a pnpm monorepo, and only a few legacy Inertia screens remain. The Inertia
+> points below record the reasoning at the time.
 
 ## Context
 
@@ -15,7 +20,7 @@ three distinct surfaces from a single codebase:
 
 The framework needed to provide first-class support for: dependency
 injection, ORM (with PostgreSQL + PostGIS), validation, queues, auth,
-file storage, mail, real-time, rate limiting — without forcing us to
+file storage, mail, real-time, rate limiting, without forcing us to
 assemble these from disconnected libraries.
 
 The team is one developer. Time-to-feature matters more than ultimate
@@ -30,17 +35,17 @@ web, and admin surfaces.
 The framework provides a built-in IoC container, Lucid ORM, VineJS
 validation, native auth with multi-driver support, Bull-Queue
 integration, Inertia.js adapter for SSR, Drive for file storage,
-Mail, and Limiter — all configured through a single `adonisrc.ts`
+Mail, and Limiter, all configured through a single `adonisrc.ts`
 and accessible via the `node ace` CLI.
 
 ## Alternatives Considered
 
-### Option A — NestJS
+### Option A: NestJS
 Mature TypeScript framework with strong DI, modular architecture,
 and a large ecosystem.
 
 **Rejected because:**
-- Batteries are not included — NestJS is a structure, not a stack.
+- Batteries are not included, NestJS is a structure, not a stack.
   We would still need to choose and integrate an ORM (TypeORM /
   Prisma), validation library, queue library, mail, auth strategy,
   file storage, real-time, etc. Each integration is glue code we
@@ -50,7 +55,7 @@ and a large ecosystem.
 - Inertia SSR integration is third-party and less polished than
   AdonisJS's official adapter.
 
-### Option B — Express / Fastify with custom architecture
+### Option B: Express / Fastify with custom architecture
 Maximum flexibility, hand-rolled stack.
 
 **Rejected because:**
@@ -60,7 +65,7 @@ Maximum flexibility, hand-rolled stack.
 - The lack of conventions creates bikeshedding with future
   contributors and inconsistency across modules.
 
-### Option C — Next.js API routes / full-stack
+### Option C: Next.js API routes / full-stack
 Single Next.js app handling both frontend and backend.
 
 **Rejected because:**
@@ -69,7 +74,7 @@ Single Next.js app handling both frontend and backend.
 - The mobile app needs a stable REST API, not Next.js route handlers.
 - Real-time SSE topology is awkward inside Next.js's request model.
 
-### Option D — Django / Laravel / Rails
+### Option D: Django / Laravel / Rails
 Mature, batteries-included frameworks in Python / PHP / Ruby.
 
 **Rejected because:**
@@ -92,7 +97,7 @@ Mature, batteries-included frameworks in Python / PHP / Ruby.
   reactivity, no separate SPA. Single deployment artifact.
 - **DI container with `@inject()`** enables clean Action /
   Repository patterns without manual wiring.
-- **Single TypeScript codebase** for API, web, admin — no language
+- **Single TypeScript codebase** for API, web, admin, no language
   context switch when working across surfaces.
 
 ### Negative
@@ -107,11 +112,13 @@ Mature, batteries-included frameworks in Python / PHP / Ruby.
   resist them.
 
 ### Neutral
-- Hosting options are standard Node.js — no special platform
+- Hosting options are standard Node.js, no special platform
   requirements. Runs fine on Hetzner Docker Compose.
 
 ## References
 
+Paths below refer to the private repository.
+
 - [AdonisJS documentation](https://docs.adonisjs.com)
-- `backend/adonisrc.ts` — framework configuration
-- `backend/package.json` — installed adapters
+- `backend/adonisrc.ts`, framework configuration
+- `backend/package.json`, installed adapters
