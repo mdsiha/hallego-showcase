@@ -22,12 +22,12 @@ Voir le schéma dans [README.md](./README.md#system-overview) (en anglais, les n
 
 Mesurés sur le code le 2 novembre 2026.
 
-| Élément | Chiffre |
-|---|---|
-| API | 30 modules, 199 endpoints, 125 migrations de base de données |
-| Application mobile | 60 écrans, 45 BLoC (Flutter) |
-| Tests automatisés | 1 428 API, 1 186 Flutter, 34 site web, tous réussis |
-| Décisions d'architecture | 27 ADR, 5 publiés ici |
+| Élément                  | Chiffre                                                      |
+| ------------------------ | ------------------------------------------------------------ |
+| API                      | 30 modules, 199 endpoints, 125 migrations de base de données |
+| Application mobile       | 60 écrans, 45 BLoC (Flutter)                                 |
+| Tests automatisés        | 1 428 API, 1 186 Flutter, 34 site web, tous réussis          |
+| Décisions d'architecture | 27 ADR, 5 publiés ici                                        |
 
 ## Technologies
 
@@ -63,6 +63,5 @@ L'interface est en turc.
 ## Contact
 
 Michael DAS, développeur full-stack, en cours d'installation à Ottawa (Canada).
-Courriel : REMOVED
 
 &copy; 2026 Michael DAS. Tous droits réservés. Les textes et images de ce dépôt sont partagés à titre de présentation seulement.
