@@ -13,6 +13,7 @@ Version française : [README.fr.md](./README.fr.md)
 - App: [Hallego on Google Play](https://play.google.com/store/apps/details?id=com.hallego.app)
 - Website: [hallego.com](https://hallego.com)
 - Open source package I extracted from the project: [@mdsiha369/adonis-mercure](https://www.npmjs.com/package/@mdsiha369/adonis-mercure) ([source](https://github.com/mdsiha/adonis-mercure))
+- Live demo of my earlier project Kaybaz (no account needed): [kaybaz.md-x.dev](https://kaybaz.md-x.dev)
 
 ## System overview
 
@@ -70,6 +71,16 @@ The interface is in Turkish.
 **Privacy by design.** The product follows the Turkish data protection law (KVKK): encryption at rest, audit logs, soft deletes, and server-side obfuscation of exact locations.
 
 <p><img src="docs/img/06_location.jpg" width="40%" alt="Approximate ad location on a map"><br><sub>The exact address is never shown: the app displays a 750 m circle computed on the server.</sub></p>
+
+## Kaybaz, a live demo you can try
+
+Kaybaz is the Turkish marketplace I built alone from 2018. It ran in production until 2022, and in 2026 I put it back online as a public demo. Hallego is my current product, Kaybaz shows an earlier one and how I make an old system safe to expose. The source code is private. The interface is in Turkish, the demo banner is in English.
+
+**Try it in two minutes, without an account.** Open [kaybaz.md-x.dev](https://kaybaz.md-x.dev), click "Try as buyer", open a listing and buy it. The payment is simulated and no real money moves: the funds stay in escrow until you confirm the reception. Then sign out and click "Try as seller" to see the order from the other side. "Try as admin" opens the back office in read-only mode.
+
+**What it demonstrates.** An escrow payment flow with scheduled automatic refunds, shipping with returns and disputes, real-time chat with Socket.IO, proximity search with PostGIS over Turkish administrative data, and an installable PWA. Stack: AdonisJS 5, Vue 3 with Quasar, PostgreSQL 17 with PostGIS, Docker, Coolify on Hetzner, Cloudflare. About 55,000 lines of code.
+
+**Making a public demo safe.** One `DEMO_MODE` switch turns every outgoing integration into a local simulation: payment gateway, invoicing, e-mail. Registration is closed and the demo accounts are locked: no password change, no listing changes, no file upload. The data is anonymised and the photos carry no EXIF metadata. A script restores a clean copy of the database every night by building a new database next to the live one, checking it, then swapping the names, so a failed reset leaves the demo untouched.
 
 ## Published decision records
 
