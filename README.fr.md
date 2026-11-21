@@ -13,6 +13,7 @@ English version: [README.md](./README.md)
 - Application : [Hallego sur Google Play](https://play.google.com/store/apps/details?id=com.hallego.app)
 - Site web : [hallego.com](https://hallego.com)
 - Package open source extrait du projet : [@mdsiha369/adonis-mercure](https://www.npmjs.com/package/@mdsiha369/adonis-mercure) ([code source](https://github.com/mdsiha/adonis-mercure))
+- Démo en ligne de mon projet précédent Kaybaz (sans compte) : [kaybaz.md-x.dev](https://kaybaz.md-x.dev)
 
 ## Vue d'ensemble
 
@@ -59,6 +60,16 @@ L'interface est en turc.
 **Protection des données dès la conception.** Le produit respecte la loi turque sur les données personnelles (KVKK) : chiffrement au repos, journaux d'audit, suppression logique et brouillage de la position exacte côté serveur.
 
 <p><img src="docs/img/06_location.jpg" width="40%" alt="Position approximative d'une annonce"><br><sub>L'adresse exacte n'est jamais affichée : l'application montre un cercle de 750 m calculé côté serveur.</sub></p>
+
+## Kaybaz, une démo en ligne à essayer
+
+Kaybaz est la marketplace turque que j'ai construite seul à partir de 2018. Elle a tourné en production jusqu'en 2022, et je l'ai remise en ligne en 2026 comme démo publique. Hallego est mon produit actuel, Kaybaz montre un projet plus ancien et la façon dont je sécurise un vieux système avant de l'exposer. Le code source est privé. L'interface est en turc, le bandeau de la démo est en anglais.
+
+**À essayer en deux minutes, sans compte.** Ouvrez [kaybaz.md-x.dev](https://kaybaz.md-x.dev), cliquez sur « Try as buyer », ouvrez une annonce et achetez-la. Le paiement est simulé, aucun argent ne bouge : les fonds restent sous séquestre jusqu'à la confirmation de réception. Déconnectez-vous ensuite et cliquez sur « Try as seller » pour voir la commande côté vendeur. « Try as admin » ouvre l'espace d'administration en lecture seule.
+
+**Ce que la démo montre.** Un paiement avec séquestre et remboursements automatiques planifiés, la livraison avec retours et litiges, une messagerie temps réel avec Socket.IO, une recherche de proximité avec PostGIS sur les données administratives turques, et une PWA installable. Stack : AdonisJS 5, Vue 3 avec Quasar, PostgreSQL 17 avec PostGIS, Docker, Coolify sur Hetzner, Cloudflare. Environ 55 000 lignes de code.
+
+**Rendre une démo publique sûre.** Un seul interrupteur `DEMO_MODE` transforme chaque intégration sortante en simulation locale : passerelle de paiement, facturation, e-mail. L'inscription est fermée et les comptes de démo sont verrouillés : pas de changement de mot de passe, pas de modification d'annonce, pas d'envoi de fichier. Les données sont anonymisées et les photos ne portent aucune métadonnée EXIF. Un script restaure chaque nuit une copie propre de la base en construisant une nouvelle base à côté de la base active, en la vérifiant, puis en échangeant les noms : un reset qui échoue laisse la démo intacte.
 
 ## Contact
 
